@@ -1,0 +1,52 @@
+html, body {
+	font-family: Century Schoolbook, Verdana, Tahoma;
+	font-size: 12pt;	
+}
+
+h2 {
+	font-family: Century Schoolbook, Verdana, Tahoma;
+	font-size: 14pt;
+	color: #ffffff;
+	background-color: #a4224f;
+}
+
+h3 {
+	font-family: Century Schoolbook, Verdana, Tahoma;
+	font-size: 13pt;
+	color: #227a3e;
+}
+
+th {
+	background-color: #a4224f;	
+	color: #eee;
+}
+
+input {
+	font-family: Century Schoolbook, Verdana, Tahoma;
+	width: 240px;
+	border: 1px solid #666; 
+	border-radius: 5px; 
+	padding: 4px; 
+	font-size: 16px;
+	background-color: #a8f4ba;
+}
+
+select {
+	font-family: Century Schoolbook, Verdana, Tahoma;
+	width: 240px;
+	border: 1px solid #666; 
+	border-radius: 5px; 
+	padding: 4px; 
+	font-size: 16px;
+	background-color: #a8f4ba;
+}
+
+invar {
+	color: #006800;
+	font-weight: bold;
+}
+
+outvar {
+	color: #a4224f;
+	font-weight: bold;
+}
