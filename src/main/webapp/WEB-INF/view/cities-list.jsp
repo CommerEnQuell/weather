@@ -13,7 +13,7 @@
 		Als er nog geen eenheden zijn opgegeven worden de eenheden als <invar>metrisch</invar> weergegeven.
 		<p><hr>
 		<p>
-		<table border="0" cellpadding="4" cellspacing="4">
+		<table>
 			<tr>
 				<th valign="top">Naam</th>
 				<th align="center" valign="top">Land</th>
@@ -23,7 +23,7 @@
 			<c:forEach var="aCityReport" items="${cityReports}">
 				<tr>
 					<td><a href="${pageContext.request.contextPath}/api/processId?cityId=${aCityReport.cityId}">${aCityReport.cityName}</a></td>
-					<td align="center">${aCityReport.countryAbb}</td>
+					<td align="left"><a href="${pageContext.request.contextPath}/api/country?countryCd=${aCityReport.country.countryCd}">${aCityReport.country.countryName}</a></td>
 					<td align="right">${aCityReport.lastReport}</td>
 					<td align="right">${aCityReport.queryCount}</td>
 				</tr>

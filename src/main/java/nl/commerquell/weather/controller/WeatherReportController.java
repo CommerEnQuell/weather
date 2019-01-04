@@ -11,13 +11,15 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.RestTemplate;
 
 import nl.commerquell.weather.db.entity.CityReport;
-import nl.commerquell.weather.entity.City;
-import nl.commerquell.weather.entity.WeatherReport;
+import nl.commerquell.weather.db.entity.Country;
+import nl.commerquell.weather.json.entity.City;
+import nl.commerquell.weather.json.entity.WeatherReport;
 import nl.commerquell.weather.service.CityReportService;
+import nl.commerquell.weather.service.CountryService;
 
 @Controller
 @RequestMapping("/api")
@@ -26,6 +28,9 @@ public class WeatherReportController {
 	
 	@Autowired
 	private CityReportService reportService;
+	
+	@Autowired
+	private CountryService countryService;
 	
 	@Value("${weather.app.url}")
 	private String url;
@@ -54,28 +59,28 @@ public class WeatherReportController {
 
 		RestTemplate restTemplate = new RestTemplate();
 		StringBuffer buf = new StringBuffer(url);
-		buf.append("?q=").append(cityName);
-		if (countryName != null && countryName.length() > 0) {
-			buf.append(",").append(countryName);
-		}
-//		String country = theCity.getCountryName();
-//		if (country != null && country.length() > 0) {
-//			buf.append(",").append(country);
-//		}
-		buf.append("&appid=").append(apiKey);
-		if (units != null && units.length() > 0) {
-			buf.append("&units=").append(units);
-			defUnits = units;
-		} else {
-			buf.append("&units=").append(defUnits);
-			units = defUnits;
-//			throw new HttpClientErrorException(HttpStatus.BAD_REQUEST, "Eenheden niet geselecteerd");
-		}
-		buf.append("&lang=nl");
-		String theUrl = buf.toString();
-		System.out.println(theUrl);
+		String fullCityName = cityName + ((countryName != null && countryName.length() > 0) ? "," + countryName : "");
+		appendParam(buf, '?', "q", fullCityName);
+		appendParam(buf, '&', "appid", apiKey);
+		appendParam(buf, '&', "units", (units != null && units.length() > 0 ? units : defUnits));
+		appendParam(buf, '&', "lang", "nl");
+		String fullUrl = buf.toString();
+		System.out.println(fullUrl);
+		
+//		Map<String, String> urlParms = new HashMap<String, String>();
+//		String fullUrl = url + "&appid=" + apiKey;
+/*		
+		
+//		if (units != null && units.length() > 0)
+			urlParms.put("units", (units != null && units.length() > 0 ? units : defUnits));
+			urlParms.put("lang", "nl");
+			urlParms.put("appid", apiKey);
+			urlParms.put("q", fullCityName);
+		
 //		theUrl = "https://samples.openweathermap.org/data/2.5/weather?q=London,uk&appid=b6907d289e10d714a6e88b30761fae22";
-		WeatherReport report = restTemplate.getForObject(theUrl, WeatherReport.class);
+//		WeatherReport report = restTemplate.getForObject(theUrl, WeatherReport.class);
+*/
+		WeatherReport report = restTemplate.getForObject(fullUrl, WeatherReport.class);
 		report.setUnits(units);
 		theModel.addAttribute("report", report);
 		
@@ -83,6 +88,30 @@ public class WeatherReportController {
 		
 		System.out.println("Weather report:\n" + report);
 		return "city-report";
+	}
+	
+	@GetMapping("/country")
+	private String getCountry(@RequestParam String countryCd, Model theModel) {
+		Country aCountry = countryService.getCountry(countryCd);
+		if (aCountry == null) {
+			throw new HttpServerErrorException(HttpStatus.BAD_REQUEST, "Land \"" + countryCd + "\" niet in database");
+		}
+		
+		theModel.addAttribute("country", aCountry);
+		return "country-form";
+	}
+	
+	@GetMapping("/processCountry")
+	private String processCountry(@RequestParam String countryCd, @RequestParam String countryName, Model theModel) {
+		Country theCountry = new Country();
+		theCountry.setCountryCd(countryCd);
+		theCountry.setCountryName(countryName);
+		countryService.saveCountry(theCountry);
+		return citiesList(theModel);
+	}
+	
+	private void appendParam(StringBuffer buf, char addIt, String param, String value ) {
+		buf.append(addIt).append(param + "=" + value);
 	}
 	
 	@GetMapping("/cities-list")
@@ -133,6 +162,14 @@ public class WeatherReportController {
 		int count = cityReport.getQueryCount();
 		cityReport.setQueryCount(++count);
 		
+		String countryCd = cityReport.getCountryAbb();
+		Country country = countryService.getCountry(countryCd);
+		if (country == null) {
+			country = new Country();
+			country.setCountryCd(countryCd);
+			country.setCountryName("<< " + countryCd + " >>");
+			countryService.saveCountry(country);
+		}
 		reportService.saveReport(cityReport);
 	}
 
