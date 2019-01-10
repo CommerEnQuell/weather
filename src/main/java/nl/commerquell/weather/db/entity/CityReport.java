@@ -5,6 +5,8 @@ import java.sql.Timestamp;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 @Entity
@@ -26,6 +28,10 @@ public class CityReport {
 	
 	@Column(name="query_count")
 	private int queryCount;
+	
+	@ManyToOne
+	@JoinColumn(name="country_abb", nullable=false, insertable=false, updatable=false)
+	private Country country;
 	
 	public int getCityId() {
 		return cityId;
@@ -65,6 +71,14 @@ public class CityReport {
 
 	public void setQueryCount(int queryCount) {
 		this.queryCount = queryCount;
+	}
+
+	public Country getCountry() {
+		return country;
+	}
+
+	public void setCountry(Country country) {
+		this.country = country;
 	}
 
 	@Override

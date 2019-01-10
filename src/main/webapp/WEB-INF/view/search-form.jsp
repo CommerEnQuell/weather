@@ -15,12 +15,13 @@
 		    <tr><td><label>Plaatsnaam</label></td><td><form:input path="cityName" /></td></tr>
 		    <tr><td><label>Land</label><td><form:input path="countryName" /></td></tr>
 		    <tr>
-		    	<td><label>Eenheden</label></td>
+		    	<td valign="top"><label>Eenheden</label></td>
 		    	<td>
-		    		<form:select path="units">
-		    		    <form:option value="" label="- Selecteer:" />
-		    			<form:options items="${city.unitOptions}" />
-		    		</form:select>
+		    		<table>
+		    			<tr><td width="4%"><form:radiobutton path="units" value="" /></td><td>Standaard</td></tr>
+		   	 			<tr><td width="4%"><form:radiobutton path="units" value="metric" /></td><td>Metrisch</td></tr>
+		   	 			<tr><td width="4%"><form:radiobutton path="units" value="imperial" /></td><td>Imperial</td></tr>
+		   	 		</table>
 		    	</td>
 		    </tr>
 	    </table>
