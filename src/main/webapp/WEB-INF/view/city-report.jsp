@@ -122,7 +122,8 @@
 		<a href="${pageContext.request.contextPath}/api/search">Ander weerrapport</a>
 		<p>
 		<a href="${pageContext.request.contextPath}/api/cities-list">Lijst van plaatsen</a>
-		
+		<p>
+		<a href="${pageContext.request.contextPath}/api/requests?cityId=${report.id}">Opvragingen voor ${report.name}</a>
 		<hr>
 		<i>Dit weerrapport is afkomstig van <a href="http://www.openweathermap.org">openweathermap.org</a></i>
 

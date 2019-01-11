@@ -1,6 +1,7 @@
 package nl.commerquell.weather.controller;
 
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,10 +17,12 @@ import org.springframework.web.client.RestTemplate;
 
 import nl.commerquell.weather.db.entity.CityReport;
 import nl.commerquell.weather.db.entity.Country;
+import nl.commerquell.weather.db.entity.ReportLog;
 import nl.commerquell.weather.json.entity.City;
 import nl.commerquell.weather.json.entity.WeatherReport;
 import nl.commerquell.weather.service.CityReportService;
 import nl.commerquell.weather.service.CountryService;
+import nl.commerquell.weather.service.ReportLogService;
 
 @Controller
 @RequestMapping("/api")
@@ -31,6 +34,9 @@ public class WeatherReportController {
 	
 	@Autowired
 	private CountryService countryService;
+	
+	@Autowired
+	private ReportLogService reportLogService;
 	
 	@Value("${weather.app.url}")
 	private String url;
@@ -146,9 +152,30 @@ public class WeatherReportController {
 		return "city-report";
 	}
 	
+	@GetMapping("requests")
+	public String getLoggings(@RequestParam int cityId, Model theModel) {
+		CityReport cityReport = reportService.getReport(cityId);
+		String cityName = cityReport.getCityName();
+		String countryAbb = cityReport.getCountryAbb();
+		Country country = countryService.getCountry(countryAbb);
+		String countryName = countryAbb;
+		if (country != null) {
+			countryName = country.getCountryName();
+		}
+		List<ReportLog> loggings = reportLogService.getReportLogs(cityId);
+		if (loggings != null) {
+			cityReport.setLoggings(loggings);
+		}
+		theModel.addAttribute("cityName", cityName);
+		theModel.addAttribute("countryName", countryName);
+		theModel.addAttribute("loggings", loggings);
+		return "requests";
+	}
+	
 	private void doDatabaseUpdate(WeatherReport report) {
 		int cityId = report.getId();
 		Timestamp timeStamp = new Timestamp(report.getDt());
+		Timestamp now = new Timestamp(System.currentTimeMillis());
 
 		CityReport cityReport = reportService.getReport(cityId);
 		if (cityReport == null) {
@@ -170,7 +197,15 @@ public class WeatherReportController {
 			country.setCountryName("<< " + countryCd + " >>");
 			countryService.saveCountry(country);
 		}
+		
 		reportService.saveReport(cityReport);
+
+		ReportLog reportLog = new ReportLog();
+		reportLog.setCityId(cityId);
+		reportLog.setReportTime(timeStamp);
+		reportLog.setRequestTime(now);
+		reportLogService.saveReportLog(reportLog);
+		
 	}
 
 	/*
