@@ -1,6 +1,7 @@
 package nl.commerquell.weather.controller;
 
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -149,6 +150,26 @@ public class WeatherReportController {
 		System.out.println("Weather report:\n" + report);
 	
 		return "city-report";
+	}
+	
+	@GetMapping("requests")
+	public String getLoggings(@RequestParam int cityId, Model theModel) {
+		CityReport cityReport = reportService.getReport(cityId);
+		String cityName = cityReport.getCityName();
+		String countryAbb = cityReport.getCountryAbb();
+		Country country = countryService.getCountry(countryAbb);
+		String countryName = countryAbb;
+		if (country != null) {
+			countryName = country.getCountryName();
+		}
+		List<ReportLog> loggings = reportLogService.getReportLogs(cityId);
+		if (loggings != null) {
+			cityReport.setLoggings(loggings);
+		}
+		theModel.addAttribute("cityName", cityName);
+		theModel.addAttribute("countryName", countryName);
+		theModel.addAttribute("loggings", loggings);
+		return "requests";
 	}
 	
 	private void doDatabaseUpdate(WeatherReport report) {
