@@ -16,10 +16,12 @@ import org.springframework.web.client.RestTemplate;
 
 import nl.commerquell.weather.db.entity.CityReport;
 import nl.commerquell.weather.db.entity.Country;
+import nl.commerquell.weather.db.entity.ReportLog;
 import nl.commerquell.weather.json.entity.City;
 import nl.commerquell.weather.json.entity.WeatherReport;
 import nl.commerquell.weather.service.CityReportService;
 import nl.commerquell.weather.service.CountryService;
+import nl.commerquell.weather.service.ReportLogService;
 
 @Controller
 @RequestMapping("/api")
@@ -31,6 +33,9 @@ public class WeatherReportController {
 	
 	@Autowired
 	private CountryService countryService;
+	
+	@Autowired
+	private ReportLogService reportLogService;
 	
 	@Value("${weather.app.url}")
 	private String url;
@@ -149,6 +154,7 @@ public class WeatherReportController {
 	private void doDatabaseUpdate(WeatherReport report) {
 		int cityId = report.getId();
 		Timestamp timeStamp = new Timestamp(report.getDt());
+		Timestamp now = new Timestamp(System.currentTimeMillis());
 
 		CityReport cityReport = reportService.getReport(cityId);
 		if (cityReport == null) {
@@ -170,7 +176,15 @@ public class WeatherReportController {
 			country.setCountryName("<< " + countryCd + " >>");
 			countryService.saveCountry(country);
 		}
+		
 		reportService.saveReport(cityReport);
+
+		ReportLog reportLog = new ReportLog();
+		reportLog.setCityId(cityId);
+		reportLog.setReportTime(timeStamp);
+		reportLog.setRequestTime(now);
+		reportLogService.saveReportLog(reportLog);
+		
 	}
 
 	/*
