@@ -2,7 +2,6 @@ package nl.commerquell.weather.db.entity;
 
 import java.sql.Timestamp;
 import java.util.List;
-import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -12,6 +11,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 @Entity
@@ -43,6 +43,10 @@ public class CityReport {
 			   cascade = {CascadeType.DETACH, CascadeType.MERGE,
 					   	  CascadeType.PERSIST, CascadeType.REFRESH})
 	private List<ReportLog> loggings;
+
+	@OneToOne(mappedBy="cityReport",
+	  cascade=CascadeType.ALL)
+	private Place city;
 	
 	public int getCityId() {
 		return cityId;
@@ -98,6 +102,14 @@ public class CityReport {
 
 	public void setLoggings(List<ReportLog> loggings) {
 		this.loggings = loggings;
+	}
+
+	public Place getCity() {
+		return city;
+	}
+
+	public void setCity(Place city) {
+		this.city = city;
 	}
 
 	@Override

@@ -22,7 +22,7 @@
 			</tr>
 			<c:forEach var="aCityReport" items="${cityReports}">
 				<tr>
-					<td><a href="${pageContext.request.contextPath}/api/processId?cityId=${aCityReport.cityId}">${aCityReport.cityName}</a></td>
+					<td><a href="${pageContext.request.contextPath}/api/processId?cityId=${aCityReport.cityId}">${aCityReport.city.cityNameNL}</a></td>
 					<td align="left"><a href="${pageContext.request.contextPath}/api/country?countryCd=${aCityReport.country.countryCd}">${aCityReport.country.countryName}</a></td>
 					<td align="right">${aCityReport.lastReport}</td>
 					<td align="right">${aCityReport.queryCount}</td>

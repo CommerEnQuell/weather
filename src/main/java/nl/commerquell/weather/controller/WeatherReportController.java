@@ -17,10 +17,12 @@ import org.springframework.web.client.RestTemplate;
 
 import nl.commerquell.weather.db.entity.CityReport;
 import nl.commerquell.weather.db.entity.Country;
+import nl.commerquell.weather.db.entity.Place;
 import nl.commerquell.weather.db.entity.ReportLog;
 import nl.commerquell.weather.json.entity.City;
 import nl.commerquell.weather.json.entity.WeatherReport;
 import nl.commerquell.weather.service.CityReportService;
+import nl.commerquell.weather.service.PlaceService;
 import nl.commerquell.weather.service.CountryService;
 import nl.commerquell.weather.service.ReportLogService;
 
@@ -34,6 +36,9 @@ public class WeatherReportController {
 	
 	@Autowired
 	private CountryService countryService;
+	
+	@Autowired
+	private PlaceService cityService;
 	
 	@Autowired
 	private ReportLogService reportLogService;
@@ -65,8 +70,18 @@ public class WeatherReportController {
 
 		RestTemplate restTemplate = new RestTemplate();
 		StringBuffer buf = new StringBuffer(url);
+		Place theCity = cityService.getPlace(cityName);
+		int cityId = -1;
+		if (theCity != null) {
+			cityId = theCity.getCityId();
+		}
+
 		String fullCityName = cityName + ((countryName != null && countryName.length() > 0) ? "," + countryName : "");
-		appendParam(buf, '?', "q", fullCityName);
+		if (cityId > 0) {
+			appendParam(buf, '?', "id", Integer.valueOf(cityId).toString());
+		} else {
+			appendParam(buf, '?', "q", fullCityName);
+		}
 		appendParam(buf, '&', "appid", apiKey);
 		appendParam(buf, '&', "units", (units != null && units.length() > 0 ? units : defUnits));
 		appendParam(buf, '&', "lang", "nl");
@@ -106,6 +121,21 @@ public class WeatherReportController {
 		theModel.addAttribute("country", aCountry);
 		return "country-form";
 	}
+
+	@GetMapping("/city")
+	private String getCity(@RequestParam int cityId, @RequestParam String cityName, Model theModel) {
+		CityReport theCityReport = reportService.getReport(cityId); 
+		Place theCity = cityService.getPlace(cityId);
+		if (theCity == null) {
+			theCity = new Place();
+			theCity.setCityId(cityId);
+			theCity.setCityNameNL(cityName);
+			theCity.setCityReport(theCityReport);
+		}
+		
+		theModel.addAttribute("city", theCity);
+		return "city-form";
+	}
 	
 	@GetMapping("/processCountry")
 	private String processCountry(@RequestParam String countryCd, @RequestParam String countryName, Model theModel) {
@@ -116,6 +146,15 @@ public class WeatherReportController {
 		return citiesList(theModel);
 	}
 	
+	@GetMapping("processCity")
+	private String processCity(@RequestParam String cityNameNL, @RequestParam int cityId, Model theModel) {
+		Place theCity = new Place();
+		theCity.setCityNameNL(cityNameNL);
+		theCity.setCityId(cityId);
+		cityService.savePlace(theCity);
+		return citiesList(theModel);
+	}
+	
 	private void appendParam(StringBuffer buf, char addIt, String param, String value ) {
 		buf.append(addIt).append(param + "=" + value);
 	}
@@ -123,6 +162,15 @@ public class WeatherReportController {
 	@GetMapping("/cities-list")
 	public String citiesList(Model theModel) {
 		List<CityReport> cityReports = reportService.getReports();
+		for (CityReport aCity : cityReports) {
+			Place aPlace = cityService.getPlace(aCity.getCityId());
+			if (aPlace == null) {
+				aPlace = new Place();
+				aPlace.setCityId(aCity.getCityId());
+				aPlace.setCityNameNL(aCity.getCityName());
+			}
+			aCity.setCity(aPlace);
+		}
 		System.out.println(cityReports.size() + " reports retrieved");
 		theModel.addAttribute("cityReports", cityReports);
 		return "cities-list";
