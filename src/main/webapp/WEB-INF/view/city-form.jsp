@@ -8,7 +8,14 @@
 		      href="${pageContext.request.contextPath}/resources/css/report.css" />
 	</head>
 	<body>
-		<h2>Geef plaatsnaam in</h2>
+		<h2>
+			<table width="100%">
+				<tr>
+					<td width="84%"><h2>Geef plaatsnaam in</h2></td>
+					<td width="16%" align="right"><h2>${user}</h2></td>
+				</tr>
+			</table>
+		</h2>
 
     <form:form action="processCity" modelAttribute="city" method="GET">
     	<form:input type="hidden" path="cityId" />

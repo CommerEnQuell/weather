@@ -16,8 +16,6 @@ import org.springframework.core.env.Environment;
 import org.springframework.orm.hibernate5.HibernateTransactionManager;
 import org.springframework.orm.hibernate5.LocalSessionFactoryBean;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
-import org.springframework.transaction.support.TransactionSynchronization;
-import org.springframework.transaction.support.TransactionSynchronizationManager;
 import org.springframework.web.servlet.ViewResolver;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
@@ -76,7 +74,7 @@ public class WeatherAppConfig implements WebMvcConfigurer {
 
 		logger.info("URL for database: " + myDataSource.getJdbcUrl());
 		logger.info("Database user...: " + myDataSource.getUser());
-		
+
 		return myDataSource;
 	}
 	
