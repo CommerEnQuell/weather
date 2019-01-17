@@ -8,7 +8,14 @@
 		      href="${pageContext.request.contextPath}/resources/css/report.css" />
 	</head>
 	<body>
-		<h2>Geef stad en eventueel landafkorting in</h2>
+		<h2>
+			<table width="100%">
+				<tr>
+					<td width="84%"><h2>Geef stad en eventueel landafkorting in</h2></td>
+					<td width="16%" align="right"><h2>${user}</h2></td>
+				</tr>
+			</table>
+		</h2>
 
     <form:form action="processForm" modelAttribute="city" method="GET">
 		<table>
@@ -16,12 +23,18 @@
 		    <tr><td><label>Land</label><td><form:input path="countryName" /></td></tr>
 		    <tr>
 		    	<td valign="top"><label>Eenheden</label></td>
-		    	<td>
+		    	<td><form:select path="units">
+		    			<form:option value="metric" label="Metrisch" />
+		    			<form:option value="" label="Standaard" />
+		    			<form:option value="imperial" label="Imperial" />
+		    		</form:select>
+<!-- 
 		    		<table>
-		    			<tr><td width="4%"><form:radiobutton path="units" value="" /></td><td>Standaard</td></tr>
-		   	 			<tr><td width="4%"><form:radiobutton path="units" value="metric" /></td><td>Metrisch</td></tr>
-		   	 			<tr><td width="4%"><form:radiobutton path="units" value="imperial" /></td><td>Imperial</td></tr>
+		    			<tr><td width="4%"><form:radiobutton label="Standaard" path="units" value="" /></td></tr>
+		   	 			<tr><td width="4%"><form:radiobutton label="Metrisch" path="units" value="metric" /></td></tr>
+		   	 			<tr><td width="4%"><form:radiobutton label="Imperial" path="units" value="imperial" /></td></tr>
 		   	 		</table>
+ -->
 		    	</td>
 		    </tr>
 	    </table>

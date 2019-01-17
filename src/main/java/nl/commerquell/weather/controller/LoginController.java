@@ -7,11 +7,16 @@ import org.springframework.web.bind.annotation.GetMapping;
 import nl.commerquell.weather.utils.JspUtils;
 
 @Controller
-public class HomeController {
-	
-	@GetMapping("/")
-	public String showHomePage(Model theModel) {
+public class LoginController {
+
+	@GetMapping("/showLoginPage")
+	public String showLoginPage() {
+		return "login-form";
+	}
+
+	@GetMapping("/access-denied")
+	public String showAccessDenied(Model theModel) {
 		JspUtils.addUsernameToModel(theModel);
-		return "home";
+		return "access-denied";
 	}
 }

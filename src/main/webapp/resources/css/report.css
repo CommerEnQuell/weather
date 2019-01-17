@@ -21,6 +21,14 @@ th {
 	color: #eee;
 }
 
+header {
+	font-family: Century Schoolbook, Verdana, Tahoma;
+	font-size: 14pt;
+	font-weight: bold;
+	color: #ffffff;
+	background-color: #a4224f;
+}
+
 input {
 	font-family: Century Schoolbook, Verdana, Tahoma;
 	width: 240px;

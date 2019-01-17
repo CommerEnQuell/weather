@@ -12,7 +12,12 @@
 	</head>
 
 	<body>
-		<h2>Weerrapport voor ${report.name}, ${report.sys.country}, geldig voor ${report.currentTime}</h2>
+	<table>
+		<tr>
+			<td width="84%"><h2>Weerrapport voor ${report.name}, ${report.sys.country}, geldig voor ${report.currentTime}</h2></td>
+			<td width="16%" align="right"><h2>${user}</h2></td>
+		</tr>
+	</table>
 		<p>
 		Co&ouml;rdinaten: <outvar>${report.coord.latitude}</outvar>, <outvar>${report.coord.longitude}</outvar>
 		<p>
@@ -123,9 +128,11 @@
 		<p>
 		<a href="${pageContext.request.contextPath}/api/cities-list">Lijst van plaatsen</a>
 		<p>
-		<a href="${pageContext.request.contextPath}/api/city?cityId=${report.id}&cityName=${report.name}">Wijzig plaatsnaam</a>
-		<p>
-		<a href="${pageContext.request.contextPath}/api/requests?cityId=${report.id}">Opvragingen voor ${report.name}</a>
+		<security:authorize access="hasRole('ADMIN')">
+			<a href="${pageContext.request.contextPath}/maint/city?cityId=${report.id}&cityName=${report.name}">Wijzig plaatsnaam</a>
+			<p>
+			<a href="${pageContext.request.contextPath}/maint/requests?cityId=${report.id}">Opvragingen voor ${report.name}</a>
+		</security:authorize>
 		<hr>
 		<i>Dit weerrapport is afkomstig van <a href="http://www.openweathermap.org">openweathermap.org</a></i>
 

@@ -1,4 +1,5 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib prefix="security" uri="http://www.springframework.org/security/tags" %>
 
 <html>
 	<head>
@@ -8,7 +9,14 @@
 		      href="${pageContext.request.contextPath}/resources/css/report.css" />
 	</head>
 	<body>
-		<h2>Lijst van plaatsen</h2>
+		<h2>
+			<table width="100%">
+				<tr>
+					<td width="84%"><h2>Lijst van plaatsen</h2></td>
+					<td width="16%" align="right"><h2>${user}</h2></td>
+				</tr>
+			</table>
+		</h2>
 		<p>Bij het opvragen van een plaats uit deze lijst worden de laatst gehanteerde eenheden gehanteerd.<br>
 		Als er nog geen eenheden zijn opgegeven worden de eenheden als <invar>metrisch</invar> weergegeven.
 		<p><hr>
@@ -23,7 +31,7 @@
 			<c:forEach var="aCityReport" items="${cityReports}">
 				<tr>
 					<td><a href="${pageContext.request.contextPath}/api/processId?cityId=${aCityReport.cityId}">${aCityReport.city.cityNameNL}</a></td>
-					<td align="left"><a href="${pageContext.request.contextPath}/api/country?countryCd=${aCityReport.country.countryCd}">${aCityReport.country.countryName}</a></td>
+					<td align="left"><a href="${pageContext.request.contextPath}/maint/country?countryCd=${aCityReport.country.countryCd}">${aCityReport.country.countryName}</a></td>
 					<td align="right">${aCityReport.lastReport}</td>
 					<td align="right">${aCityReport.queryCount}</td>
 				</tr>
