@@ -1,5 +1,5 @@
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
-
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <html>
 	<head>
 		<title>Wijzig landomschrijving</title>
@@ -25,8 +25,11 @@
 	    </table>
 
 	    <br><br>
+
+		<sec:authorize access="hasRole('ADMIN')">	
+			<input type="submit" value="Wijzigen" />
+		</sec:authorize>
 	
-		<input type="submit" value="Wijzigen" />
     </form:form>
 
 	<p>		

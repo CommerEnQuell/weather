@@ -1,9 +1,15 @@
 package nl.commerquell.weather.controller;
 
+import java.util.Collection;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -89,6 +95,23 @@ public class MaintenanceController {
 	@GetMapping("/requests")
 	public String getLoggings(@RequestParam int cityId, Model theModel) {
 		JspUtils.addUsernameToModel(theModel);
+		Authentication a = SecurityContextHolder.getContext().getAuthentication();
+		boolean authorized = false;
+		if (a != null) {
+			if (a.getPrincipal() instanceof UserDetails) {
+				Collection<GrantedAuthority> roles = (Collection<GrantedAuthority>) ((UserDetails) a.getPrincipal()).getAuthorities();
+				for (GrantedAuthority role : roles) {
+					System.out.println("Authority granted: "+ role.getAuthority());
+					if (role.getAuthority().indexOf("ADMIN") >= 0) {
+						authorized = true;
+						break;
+					}
+				}
+			}
+		}
+		if (!authorized) {
+			throw new HttpServerErrorException(HttpStatus.FORBIDDEN, "This request is only allowed to admins");
+		}
 		CityReport cityReport = reportService.getReport(cityId);
 		String cityName = cityReport.getCityName();
 		String countryAbb = cityReport.getCountryAbb();

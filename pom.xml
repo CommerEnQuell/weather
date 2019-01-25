@@ -4,12 +4,21 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>nl.commerquell</groupId>
 	<artifactId>weather</artifactId>
-	<version>1.0.0</version>
+	<version>1.0.1</version>
 	<packaging>war</packaging>
 
+<!-- 
+	<parent>
+		<groupId>org.springframework.boot</groupId>
+		<artifactId>spring-boot-starter-parent</artifactId>
+		<version>2.0.8.RELEASE</version>
+		<relativePath/>  lookup parent from repository 
+	</parent>
+-->
 	<properties>
 		<springframework.version>5.1.2.RELEASE</springframework.version>
 		<springsecurity.version>5.1.2.RELEASE</springsecurity.version>
+<!-- 	<springboot.version>2.0.8.RELEASE</springboot.version> -->
 
 		<hibernate.version>5.3.7.Final</hibernate.version>
 		<mysql.connector.version>8.0.13</mysql.connector.version>
@@ -40,6 +49,13 @@
 			<version>${springframework.version}</version>
 		</dependency>
 
+<!-- 
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-web</artifactId>
+			<version>${springboot.version}</version>
+		</dependency>
+-->
 		<!-- Add Jackson for JSON converters -->
 		<dependency>
 			<groupId>com.fasterxml.jackson.core</groupId>
@@ -127,13 +143,19 @@
 
 			<!-- Builds a Web Application Archive (WAR) file from the project output 
 				and its dependencies. -->
+
 			<plugin>
 				<!-- Add Maven coordinates (GAV) for: maven-war-plugin -->
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-war-plugin</artifactId>
 				<version>3.2.0</version>
 			</plugin>
-
+<!-- 	
+			<plugin>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-maven-plugin</artifactId>
+			</plugin>
+-->
 		</plugins>
 	</build>
 </project>

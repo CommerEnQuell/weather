@@ -37,7 +37,7 @@ public class WeatherSecurityConfig extends WebSecurityConfigurerAdapter {
 	protected void configure(HttpSecurity http) throws Exception {
 		http.authorizeRequests()
 //			.anyRequest().authenticated()
-			.antMatchers("/maint/**").hasRole("ADMIN")
+			.antMatchers("/maint/**").hasAnyRole("ADMIN", "USER")
 			.antMatchers("/").permitAll()
 			.antMatchers("/api/**").permitAll()
 			.and()
