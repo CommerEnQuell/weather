@@ -4,7 +4,9 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 
-public class DateUtils {
+public final class DateUtils {
+	
+	private DateUtils() {}
 
 	public static String format(Date date, String pattern) {
 		Calendar cal = new GregorianCalendar();

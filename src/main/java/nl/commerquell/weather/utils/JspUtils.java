@@ -15,7 +15,10 @@ import org.springframework.ui.Model;
  * deserunt mollit anim id est laborum.
  */
 
-public class JspUtils {
+public final class JspUtils {
+	
+	private JspUtils() {}
+	
 	public static void addUsernameToModel(Model theModel) {
 		String userName = null;
 		Authentication a = SecurityContextHolder.getContext().getAuthentication();
